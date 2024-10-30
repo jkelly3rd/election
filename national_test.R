@@ -50,7 +50,7 @@ for (state in state_abbreviations) {
   all_county_candidates_pivoted <- bind_rows(all_county_candidates_pivoted, county_candidates_pivoted)
 }
 
-# manually change fips for alaska to match datawrapper fips for house districts
+# manually change fips for alaska to match datawrapper fips for Alaska house districts thanks Alaska
 # change fips equal to 2901 to 2001, 2902 to 2002 and so on through 2940
 all_county_candidates_pivoted$fips[all_county_candidates_pivoted$fips == "2901"] <- "2001"
 all_county_candidates_pivoted$fips[all_county_candidates_pivoted$fips == "2902"] <- "2002"
