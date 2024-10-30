@@ -4,7 +4,7 @@ library(tidyverse)
 library(tidyr)
 
 # URL to the JSON data
-json_url <- "https://api-election.cbsnews.com/api/public/counties2/2016/G/PA/P"
+json_url <- "https://api-election.cbsnews.com/api/public/counties2/2020/G/PA/P"
 
 # GET the JSON data
 response <- GET(json_url)
