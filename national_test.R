@@ -43,11 +43,16 @@ for (state in state_abbreviations) {
     ungroup()
   
   # Add a column for difference between pct_trump and pct_biden
+  # Add a column for difference between pct_trump and pct_biden
   county_candidates_pivoted <- county_candidates_pivoted %>%
-    mutate(pct_diff = pct_Trump - pct_Biden)
+    mutate(pct_diff = pct_Trump - pct_Biden,
+           state = state)  # Add the state abbreviation column
   
   # Append the processed data to the results data frame
   all_county_candidates_pivoted <- bind_rows(all_county_candidates_pivoted, county_candidates_pivoted)
+  
+  # Add a two-second delay
+  Sys.sleep(2)
 }
 
 # manually change fips for alaska to match datawrapper fips for Alaska house districts thanks Alaska
