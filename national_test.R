@@ -103,7 +103,14 @@ all_county_candidates_pivoted$fips[all_county_candidates_pivoted$fips == "2940"]
 # fix fips column to pad with leading zeros so it is always five characters in the string
 all_county_candidates_pivoted$fips <- str_pad(all_county_candidates_pivoted$fips, width = 5, side = "left", pad = "0")
 
-
-
 # Export the combined data frame as a CSV
 write.csv(all_county_candidates_pivoted, "data/county_votes_all_states.csv", row.names = FALSE)
+
+# Write a separate CSV file for each state in a loop
+for (state in state_abbreviations) {
+  state_data <- all_county_candidates_pivoted %>%
+    filter(state == state)
+  file_name <- paste0("data/county_votes_", state, ".csv")
+  write.csv(state_data, file_name, row.names = FALSE)
+}
+
