@@ -25,8 +25,8 @@ for (state in state_abbreviations) {
   # GET the JSON data
   response <- GET(json_url)
   json_data <- content(response, "text")
-  # data <- fromJSON(json_data, simplifyVector = FALSE)
-  data <- fromJSON(json_data)
+  data <- jsonlite::fromJSON(json_data, simplifyVector = FALSE)
+  #data <- fromJSON(json_data)
   
   print(state)
   print(json_url)
@@ -73,17 +73,23 @@ all_counties_fix_padding <- all_counties %>%
 
 all_counties_names <- merge(all_counties_fix_padding, county_names_fips, by.x="fips", by.y="GEOID", all.x=TRUE) #merge
 
+#THIS IS FOR TESTING!!! GENERATE RANDOM NUMBERS FOR pctExpVote, vote_Harris, vote_Trump, pct_Harris, pct_Trump
+all_counties_names$totalExpVote <- sample(100, size = nrow(all_counties_names), replace = TRUE)
+all_counties_names$totalVote <- sample(100, size = nrow(all_counties_names), replace = TRUE)
+all_counties_names$vote_Harris <- sample(100, size = nrow(all_counties_names), replace = TRUE)
+all_counties_names$vote_Trump <- sample(100, size = nrow(all_counties_names), replace = TRUE)
+
 
 all_counties_clean <- all_counties_names %>% 
   mutate(vote_Other = totalVote-(`vote_Harris`+`vote_Trump`)) %>% 
   mutate(pctExpVote = (totalVote/totalExpVote)*100) %>% 
-  mutate(pctExpVote = case_when(is.na(pctExpVote) == TRUE ~ 0,
-                                TRUE ~ pctExpVote)) %>% 
   mutate(`pct_Harris` = (`vote_Harris`/totalVote)*100) %>%
   mutate(`pct_Trump` = (`vote_Trump`/totalVote)*100) %>%
   mutate(ts_pretty = format(as.POSIXct(timeStamp), format = "%B %d, %Y %I:%M %p", tz="America/New_York")) %>% #format it pretty with ET tz
   mutate(ts_pretty = str_replace_all(as.character(ts_pretty), " 0", " ")) %>% #get rid of leading zeros
   mutate(ts_pretty = paste0("Updated: ",ts_pretty, " ET")) %>% #add ET time zone at the end
+  mutate(ts_pretty = case_when(state=="AL" ~ "Updated: November 5, 2024 9:25 PM ET",
+                               TRUE ~ ts_pretty)) %>% #FOR TESTING ONLY
   mutate(ts_pretty = case_when(ts_pretty == "Updated: December 31, 000 7:03 PM ET" ~ "No voting data yet", #if timestamp still placeholder, change it to "no voting data yet"
                                TRUE ~ ts_pretty)) %>% 
   mutate(fips_new = case_when(state == "AK" ~ str_replace_all(fips, "029", "020"),
@@ -104,5 +110,12 @@ all_counties_clean <- merge(all_counties_clean, ak_names, by="fips", all.x=TRUE)
   select(-fips) %>% 
   rename(fips = fips_new)
 
-write.csv(all_counties_clean, "output/all_counties_clean_2024.csv", row.names = FALSE)
+
+
+write.csv(all_counties_clean, "output/TEST_all_counties_clean_2024_TEST.csv", row.names = FALSE)
+
+
+
+
+
 
